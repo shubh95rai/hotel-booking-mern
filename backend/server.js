@@ -18,18 +18,19 @@ connectCloudinary();
 
 // middlewares
 app.use(cors()); // enable cross origin resource sharing
-app.use(express.json());
-app.use(clerkMiddleware());
-
-// API to listen to clerk webhooks
-app.use("/api/clerk", clerkWebhooks);
 
 // API to listen to stripe webhooks
 app.post(
   "/api/stripe",
   express.raw({ type: "application/json" }),
   stripeWebhooks
-);
+); // stripe requires the raw body of the request to verify the webhook signature that's why we're using express.raw before express.json
+
+app.use(express.json());
+app.use(clerkMiddleware());
+
+// API to listen to clerk webhooks
+app.use("/api/clerk", clerkWebhooks);
 
 // routes
 app.get("/", (req, res) => {
