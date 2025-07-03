@@ -39,7 +39,7 @@ export default function Hero() {
   }
 
   return (
-    <div className="flex flex-col items-start justify-center px-6 md:px-16 lg:px-24 xl:px-32 text-white bg-[url('/src/assets/heroImage.png')] bg-no-repeat bg-cover bg-center h-screen">
+    <div className="flex flex-col items-start justify-center px-6 md:px-16 lg:px-24 xl:px-32 text-white bg-[url('/src/assets/heroImage.png')] bg-no-repeat bg-cover bg-center min-h-screen">
       <p className="bg-blue-600/60 px-3.5 py-1 rounded-full mt-20 mx-auto">
         The Ultimate Hotel Experience
       </p>
@@ -53,7 +53,7 @@ export default function Hero() {
 
       <form
         onSubmit={onSearch}
-        className="bg-white text-gray-500 rounded-lg px-6 py-4 mt-8 flex flex-col md:flex-row max-md:items-start gap-4 mx-auto"
+        className="bg-white text-gray-500 rounded-lg px-6 py-4 mt-8 flex flex-col md:flex-row max-md:items-start gap-4 mx-auto mb-4 md:mb-0"
       >
         <div>
           <div className="flex items-center gap-2">

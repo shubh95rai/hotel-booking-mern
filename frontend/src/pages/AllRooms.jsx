@@ -228,7 +228,7 @@ export default function AllRooms() {
       </div>
 
       {/* filters */}
-      <div className="bg-white w-80 border border-gray-300 text-gray-600 max-lg:mb-8 min-lg:mt-16">
+      <div className="bg-white w-72 sm:w-80 border border-gray-300 text-gray-600 max-lg:mb-8 min-lg:mt-16">
         <div
           className={`flex items-center justify-between px-5 py-2.5 min-lg:border-b border-gray-300 ${
             openFilters ? "border-b" : ""
