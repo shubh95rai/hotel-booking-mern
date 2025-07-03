@@ -12,7 +12,7 @@ import ListRoom from "./pages/hotel-owner/ListRoom";
 import AllRooms from "./pages/AllRooms";
 import { Toaster } from "react-hot-toast";
 import { useAppContext } from "./context/AppContext";
-import ScrollToTop from "./components/scrollToTop";
+import ScrollToTop from "./components/ScrollToTop";
 import Loader from "./components/Loader";
 
 export default function App() {
