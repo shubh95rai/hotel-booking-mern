@@ -1,5 +1,5 @@
 import { useSearchParams } from "react-router-dom";
-import { assets, facilityIcons, roomsDummyData } from "../assets/assets";
+import { assets, facilityIcons } from "../assets/assets";
 import StarRating from "../components/StarRating";
 import { useMemo, useState } from "react";
 import { useAppContext } from "../context/AppContext";
@@ -177,7 +177,7 @@ export default function AllRooms() {
             <img
               onClick={() => {
                 navigate(`/rooms/${room._id}`);
-                scrollTo(0, 0);
+                // scrollTo(0, 0);
               }}
               src={room.images[0]}
               alt="hotel-image"
