@@ -1,9 +1,64 @@
+import { useState } from "react";
 import { assets, cities } from "../assets/assets";
+import { useAppContext } from "../context/AppContext";
+import toast from "react-hot-toast";
 
 export default function HotelReg() {
+  const { setShowHotelReg, axios, getToken, setIsOwner } = useAppContext();
+
+  const [name, setName] = useState("");
+  const [contact, setContact] = useState("");
+  const [address, setAddress] = useState("");
+  const [city, setCity] = useState("");
+
+  async function onSubmitHandler(e) {
+    e.preventDefault();
+
+    try {
+      const response = await axios.post(
+        "/api/hotels",
+        {
+          name,
+          contact,
+          address,
+          city,
+        },
+        {
+          headers: {
+            Authorization: `Bearer ${await getToken()}`,
+          },
+        }
+      );
+
+      if (response.data.success) {
+        toast.success(response.data.message);
+        setIsOwner(true);
+        setShowHotelReg(false);
+      }
+    } catch (error) {
+      const message =
+        error?.response?.data?.message || error.message || "Unknown error";
+
+      console.error(message);
+
+      toast.error("Hotel registration failed");
+    }
+  }
+
   return (
-    <div className="fixed inset-0 z-100 flex items-center justify-center bg-black/70 px-4">
-      <form className="flex bg-white rounded-xl max-w-4xl max-md:mx-2">
+    <div
+      onClick={() => {
+        setShowHotelReg(false);
+      }}
+      className="fixed inset-0 z-100 flex items-center justify-center bg-black/70 px-4"
+    >
+      <form
+        onSubmit={onSubmitHandler}
+        onClick={(e) => {
+          e.stopPropagation();
+        }}
+        className="flex bg-white rounded-xl max-w-4xl max-md:mx-2"
+      >
         <img
           src={assets.regImage}
           alt="reg-image"
@@ -15,6 +70,7 @@ export default function HotelReg() {
             src={assets.closeIcon}
             alt="close-icon"
             className="w-4 h-4 absolute top-4 right-4 cursor-pointer"
+            onClick={() => setShowHotelReg(false)}
           />
           <p className="text-2xl font-semibold mt-6">Register Your Hotel</p>
 
@@ -25,6 +81,8 @@ export default function HotelReg() {
             </label>
             <input
               id="name"
+              value={name}
+              onChange={(e) => setName(e.target.value)}
               type="text"
               placeholder="Type here"
               className="border border-gray-200 rounded w-full px-3 py-2.5 mt-1 outline-indigo-500 font-light"
@@ -39,6 +97,8 @@ export default function HotelReg() {
             </label>
             <input
               id="contact"
+              value={contact}
+              onChange={(e) => setContact(e.target.value)}
               type="text"
               placeholder="Type here"
               className="border border-gray-200 rounded w-full px-3 py-2.5 mt-1 outline-indigo-500 font-light"
@@ -53,6 +113,8 @@ export default function HotelReg() {
             </label>
             <input
               id="address"
+              value={address}
+              onChange={(e) => setAddress(e.target.value)}
               type="text"
               placeholder="Type here"
               className="border border-gray-200 rounded w-full px-3 py-2.5 mt-1 outline-indigo-500 font-light"
@@ -67,6 +129,8 @@ export default function HotelReg() {
             </label>
             <select
               id="address"
+              value={city}
+              onChange={(e) => setCity(e.target.value)}
               placeholder="Type here"
               className="border border-gray-200 rounded w-full px-3 py-2.5 mt-1 outline-indigo-500 font-light"
               required

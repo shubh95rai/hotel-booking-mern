@@ -1,9 +1,43 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { assets, dashboardDummyData } from "../../assets/assets";
 import Title from "../../components/Title";
+import { useAppContext } from "../../context/AppContext.jsx";
 
 export default function Dashboard() {
-  const [dashboardData, setDashboardData] = useState(dashboardDummyData);
+  const { axios, getToken, currency, user } = useAppContext();
+
+  const [dashboardData, setDashboardData] = useState({
+    bookings: [],
+    totalBookings: 0,
+    totalRevenue: 0,
+  });
+
+  async function fetchDashboardData() {
+    try {
+      const response = await axios.get("/api/bookings/hotel", {
+        headers: {
+          Authorization: `Bearer ${await getToken()}`,
+        },
+      });
+
+      if (response.data.success) {
+        setDashboardData(response.data.dashboardData);
+      }
+    } catch (error) {
+      const message =
+        error?.response?.data?.message || error.message || "Unknown error";
+
+      console.error(message);
+
+      toast.error("Error fetching dashboard data");
+    }
+  }
+
+  useEffect(() => {
+    if (user) {
+      fetchDashboardData();
+    }
+  }, [user]);
 
   return (
     <div>
@@ -40,7 +74,7 @@ export default function Dashboard() {
           <div className="flex flex-col sm:ml-4 font-medium">
             <p className="text-blue-500 text-lg">Total Revenue</p>
             <p className="text-neutral-400 text-base">
-              $ {dashboardData.totalRevenue}
+              {currency} {dashboardData.totalRevenue}
             </p>
           </div>
         </div>
@@ -72,7 +106,7 @@ export default function Dashboard() {
                   {item.room.roomType}
                 </td>
                 <td className="py-3 px-4 text-gray-700 border-t border-gray-300 text-center">
-                  $ {item.totalPrice}
+                  {currency} {item.totalPrice}
                 </td>
                 <td className="py-3 px-4 border-t border-gray-300 flex">
                   <button

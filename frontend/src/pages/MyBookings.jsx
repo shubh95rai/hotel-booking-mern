@@ -1,9 +1,67 @@
-import { assets, userBookingsDummyData } from "../assets/assets";
+import { assets } from "../assets/assets";
 import Title from "../components/Title";
-import { useState } from "react";
+import { useEffect, useState } from "react";
+import { useAppContext } from "../context/AppContext";
+import toast from "react-hot-toast";
 
 export default function MyBookings() {
-  const [bookings, setBookings] = useState(userBookingsDummyData);
+  const { axios, getToken, user, navigate } = useAppContext();
+
+  const [bookings, setBookings] = useState([]);
+
+  async function fetchUserBookings() {
+    try {
+      const response = await axios.get("/api/bookings/user", {
+        headers: {
+          Authorization: `Bearer ${await getToken()}`,
+        },
+      });
+
+      if (response.data.success) {
+        setBookings(response.data.bookings);
+      }
+    } catch (error) {
+      const message =
+        error?.response?.data?.message || error.message || "Unknown error";
+
+      console.error(message);
+
+      toast.error("Error fetching bookings");
+    }
+  }
+
+  async function handlePayment(bookingId) {
+    try {
+      const response = await axios.post(
+        `/api/bookings/stripe-payment`,
+        {
+          bookingId,
+        },
+        {
+          headers: {
+            Authorization: `Bearer ${await getToken()}`,
+          },
+        }
+      );
+
+      if (response.data.success) {
+        window.location.href = response.data.url; // redirect to stripe checkout page
+      }
+    } catch (error) {
+      const message =
+        error?.response?.data?.message || error.message || "Unknown error";
+
+      console.error(message);
+
+      toast.error("Error processing payment");
+    }
+  }
+
+  useEffect(() => {
+    if (user) {
+      fetchUserBookings();
+    }
+  }, [user]);
 
   return (
     <div className="py-28 md:pb-35 md:pt-32 px-4 md:px-16 lg:px-24 xl:px-32">
@@ -85,7 +143,10 @@ export default function MyBookings() {
                 </p>
               </div>
               {!booking.isPaid && (
-                <button className="px-4 py-1.5 mt-4 text-xs border border-gray-400 rounded-full hover:bg-gray-50 transition-all cursor-pointer">
+                <button
+                  onClick={() => handlePayment(booking._id)}
+                  className="px-4 py-1.5 mt-4 text-xs border border-gray-400 rounded-full hover:bg-gray-50 transition-all cursor-pointer"
+                >
                   Pay Now
                 </button>
               )}
